@@ -12,7 +12,7 @@ from nap.model import ModelSerializer, Model, Storage
 from nap.validators import FieldValidator, EnsureNotEmpty, EnsureInt, EnsureMinLength
 from nap.controller import ModelController
 
-from app import db_session
+from app import db_session, app, engine
 
 
 class Tag(Model):
@@ -93,3 +93,7 @@ class TodosApi(Api):
         ModelNotFoundExceptionHandler,
         ModelInvalidExceptionHandler
     ]
+
+api = TodosApi()
+app.register_blueprint(api)
+SAModel.metadata.create_all(engine)
