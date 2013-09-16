@@ -45,3 +45,6 @@ nosetests.xml
 *.swp
 *.swo
 *.swn
+
+# Do not commit the database
+db/todos.db

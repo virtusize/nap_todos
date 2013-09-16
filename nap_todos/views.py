@@ -1,6 +1,6 @@
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import ForeignKey
-from sqlalchemy.types import Integer, Unicode
+from sqlalchemy.types import Integer, Unicode, Boolean
 
 from flask_nap.api import Api, Debug, JsonDecoder
 from flask_nap.view import ModelView
@@ -31,14 +31,17 @@ class Tags(Storage):
 class TodoList(SAModel):
 
     id = Field(Integer, primary_key=True)
-    name = Field(Unicode(255), validate_constraints=True, validate_with=[EnsureMinLength(3), EnsureNotEmpty()])
+    title = Field(Unicode(255), validate_constraints=True, validate_with=[EnsureMinLength(3), EnsureNotEmpty()])
+    completed = Field(Boolean, default=False)
 
 
 class Todo(SAModel):
 
     id = Field(Integer, primary_key=True)
-    name = Field(Unicode(255), validate_constraints=True, validate_with=[EnsureMinLength(3), EnsureNotEmpty()])
-    todo_list_id = Field(Integer, ForeignKey('todo_lists.id'), nullable=False, validate_constraints=True)
+    title = Field(Unicode(255), validate_constraints=True, validate_with=[EnsureMinLength(3), EnsureNotEmpty()])
+    order = Field(Integer)
+    completed = Field(Boolean, default=False)
+    todo_list_id = Field(Integer, ForeignKey('todo_lists.id'))
     todo_list = relationship(TodoList, backref='todos')
 
 
@@ -80,7 +83,7 @@ class TodosApi(Api):
     prefix = '/api'
     version = 1
     mixins = [
-        Debug(print_request=False, print_response=False),
+        Debug(print_request=True, print_response=True),
         JsonDecoder
     ]
     views = [
