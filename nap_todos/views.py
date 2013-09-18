@@ -2,10 +2,10 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.schema import ForeignKey
 from sqlalchemy.types import Integer, Unicode, Boolean
 
-from flask_nap.api import Api, Debug, JsonDecoder
+from flask_nap.api import Api, Debug, JsonRequestParser
 from flask_nap.view import ModelView
 from flask_nap.view_filters import CamelizeFilter
-from flask_nap.exception_handlers import UnsupportedMethodExceptionHandler, ModelNotFoundExceptionHandler, ModelInvalidExceptionHandler
+from flask_nap.exception_handlers import UnsupportedMethodExceptionHandler, ModelNotFoundExceptionHandler, ModelInvalidExceptionHandler, InvalidJSONExceptionHandler
 from sa_nap.controller import SAModelController
 from sa_nap.model import SAModelSerializer, SAModel, Field
 from nap.model import ModelSerializer, Model, Storage
@@ -84,7 +84,7 @@ class TodosApi(Api):
     version = 1
     mixins = [
         Debug(print_request=True, print_response=True),
-        JsonDecoder
+        JsonRequestParser
     ]
     views = [
         TagView,
@@ -93,6 +93,7 @@ class TodosApi(Api):
     ]
     exception_handlers = [
         UnsupportedMethodExceptionHandler,
+        InvalidJSONExceptionHandler,
         ModelNotFoundExceptionHandler,
         ModelInvalidExceptionHandler
     ]
